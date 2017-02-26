@@ -95,5 +95,10 @@ def label_to_rn(chords_in_segment, lowest_notes_in_chord, desired_key):
     # Map to Roman Numerals
     roman_numerals = []
     for i in range(len(chord_solfege)):
-        roman_numerals.append(solfege_to_roman_numerals[tuple(chord_solfege[i])])
+        # rn = None
+        try:
+            rn = solfege_to_roman_numerals[tuple(chord_solfege[i])]
+        except KeyError:
+            rn = None
+        roman_numerals.append(rn)
     return roman_numerals
