@@ -2,7 +2,7 @@ import runMelisma, sys, chordquality_identifier, convert_labels_to_roman_numeral
 
 
 if len(sys.argv) != 3:
-    print "usage: python main.py <midifile> <desired key>"
+    print "usage: python milestone1.py <midifile> <desired key>"
     quit()
 
 args = sys.argv
