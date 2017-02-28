@@ -13,7 +13,10 @@ correct_key = ""
 correct_romanNumerals = []
 chordsAndPitches, lowestNotesInChord = runMelisma.getChordsAndPitches(midifile)
 
-for i in range(12):
+# for i in chordsAndPitches:
+#     print i
+
+for i in range(len(keys)):
 
     chordsWithQuality = []
 
@@ -34,23 +37,65 @@ for i in range(12):
         if romanNumerals[k] is None:
             continue
         if romanNumerals[k][0] == "I":
-            score += 1
-            num_major_tonic += 1
+            if len(romanNumerals[k]) > 1:
+                if romanNumerals[k][1] != "I" and romanNumerals[k][1] != "V":
+                    score += 1
+                    num_major_tonic += 1
+            else:
+                score += 1
+                num_major_tonic += 1
 
         if romanNumerals[k][0] == "i":
-            score += 1
-            num_minor_tonic += 1
+            if len(romanNumerals[k]) > 1:
+                if romanNumerals[k][1] != "i" and romanNumerals[k][1] != "v":
+                    score += 1
+                    num_major_tonic += 1
+            else:
+                score += 1
+                num_major_tonic += 1
 
         if romanNumerals[k][0] == "V" or romanNumerals[k][0] == "v":
-            score += 1
+            if len(romanNumerals[k]) > 1:
+                if romanNumerals[k][1] != "i" and romanNumerals[k][1] != "I":
+                    score += 1
+            else:
+                score += 1
         if romanNumerals[k][0:1] == "IV" or romanNumerals[k][0:1] == "iv":
             score += 1
         if romanNumerals[k][0:1] == "IV" or romanNumerals[k][0:1] == "iv":
             score += 1
-        if k == (len(romanNumerals) - 1) and romanNumerals[k - 1] is not None:
-            if (romanNumerals[k - 1][0] == "V" and romanNumerals[k][0] == "I") or \
-                    (romanNumerals[k - 1][0] == "V" and romanNumerals[k][0] == "i"):
-                score += 5
+        if k >= 0 and romanNumerals[k - 1] is not None and romanNumerals[k] is not None:
+            if romanNumerals[k - 1][0] == "V" and romanNumerals[k][0] == "I":
+                actuallyV = False
+                if len(romanNumerals[k-1]) > 1:
+                    if romanNumerals[k-1][1] != "I":
+                        actuallyV = True
+                else:
+                    actuallyV = True
+                actuallyI = False
+                if len(romanNumerals[k]) > 1:
+                    if romanNumerals[k][1] != "I" and romanNumerals[k][1] != "V":
+                        actuallyI = True
+                else:
+                    actuallyI = True
+                if actuallyV and actuallyI:
+                    score += 5
+            elif romanNumerals[k - 1][0] == "V" and romanNumerals[k][0] == "i":
+                actuallyV = False
+                if len(romanNumerals[k-1]) > 1:
+                    if romanNumerals[k-1][1] != "I":
+                        actuallyV = True
+                else:
+                    actuallyV = True
+                actuallyI = False
+                if len(romanNumerals[k]) > 1:
+                    if romanNumerals[k][1] != "i" and romanNumerals[k][1] != "v":
+                        actuallyI = True
+                else:
+                    actuallyI = True
+                if actuallyV and actuallyI:
+                    score += 5
+    print keys[i], score, romanNumerals
     if score > highest_score:
         highest_score = score
         correct_romanNumerals = romanNumerals

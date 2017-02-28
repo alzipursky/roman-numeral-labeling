@@ -57,7 +57,8 @@ def getChordsAndPitches(midifile):
                             chordsStartAndEndDict[t] = int(chunksN[2])
 
             if len(chunks) > 0 and chunks[0] not in ignore:
-                chunks = [x.strip('>') for x in chunks]
+                # ----->>>>> added the dash to strip because of weird melisma output <<<<<----------
+                chunks = [x.strip('>-x*<') for x in chunks]
                 chunks = [x for x in chunks if (x != '<' and x != '+' and x != 'x' and x != '|' and x != '' and x not in nums)]
                 chunks = chunks[1:]
 

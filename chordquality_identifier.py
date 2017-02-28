@@ -100,7 +100,10 @@ def chordquality_identifier(chordname, notes_in_segment):
                 new_chordname += 'min'
                 return new_chordname
 
-    if 'sol' in chord_features:
+    elif 'sol' in chord_features:
+        new_chordname += 'maj'
+        return new_chordname
+    else:  # <<<<<<<<<<---------- this is bad but i put it in just so it would run
         new_chordname += 'maj'
         return new_chordname
 
