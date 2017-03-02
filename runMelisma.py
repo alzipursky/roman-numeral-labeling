@@ -19,7 +19,6 @@ def getChordsAndPitches(midifile):
     dictNotInitialized = True
     lowestNoteInChord = []
 
-
     with open('output.txt') as f:
         content = f.readlines()
         for row in content:

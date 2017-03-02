@@ -1,5 +1,4 @@
-import runMelisma, sys, chordquality_identifier, convert_labels_to_roman_numerals, transposition, chroma_to_notes, \
-    notes_to_chroma
+import runMelisma, sys, chordquality_identifier, convert_labels_to_roman_numerals
 
 if len(sys.argv) != 2:
     print "usage: python milestone2.py <midifile> <desired key>"
@@ -13,44 +12,6 @@ highest_score = 0
 correct_key = ""
 correct_romanNumerals = []
 chordsAndPitches, lowestNotesInChord = runMelisma.getChordsAndPitches(midifile)
-
-# for i in chordsAndPitches:
-#     print i
-
-# Check if Transposition is Necessary: Get rid of funky chords
-num_transposition_steps = 0
-for l in range(len(chordsAndPitches)):
-    if "bb" in chordsAndPitches[l][0]:
-        num_transposition_steps = 1
-        new_chords = []
-        for i in range(len(chordsAndPitches)):
-            new_chord_label = transposition.transpose(chordsAndPitches[i][0], num_transposition_steps)
-            new_notes = []
-            for note in chordsAndPitches[i][1]:
-                new_notes.append(transposition.transpose(note, num_transposition_steps))
-            new_chords.append((new_chord_label, new_notes))
-        chordsAndPitches = new_chords
-        break  # leave function
-    if "##" in chordsAndPitches[l][0]:
-        num_transposition_steps = -1
-        new_chords = []
-        for i in range(len(chordsAndPitches)):
-            new_chord_label = transposition.transpose(chordsAndPitches[i][0], num_transposition_steps)
-            new_notes = []
-            for note in chordsAndPitches[i][1]:
-                new_notes.append(transposition.transpose(note, num_transposition_steps))
-            new_chords.append((new_chord_label, new_notes))
-        chordsAndPitches = new_chords
-        break  # leave function
-
-# print chords
-
-# update chordsAndPitches to reflect transposition
-# if len(chords) > 0:
-#     chordsAndPitches1 = []
-#     for m in range(len(chordsAndPitches)):
-#         chordsAndPitches1.append((chords[m], chordsAndPitches[m][1]))
-#     chordsAndPitches = chordsAndPitches1
 
 # for i in chordsAndPitches:
 #     print i
@@ -99,15 +60,19 @@ for i in range(len(keys)):
                     score += 1
             else:
                 score += 1
-        if romanNumerals[k][0:1] == "IV" or romanNumerals[k][0:1] == "iv":
+        if romanNumerals[k][0:2] == "IV" or romanNumerals[k][0:2] == "iv":
             score += 1
-        if romanNumerals[k][0:1] == "IV" or romanNumerals[k][0:1] == "iv":
-            score += 1
+        if romanNumerals[k][0:2] == "VI" or romanNumerals[k][0:2] == "vi":
+            if len(romanNumerals[k]) > 2:
+                if romanNumerals[k][2] != "i" and romanNumerals[k][2] != "I":
+                    score += 1
+            else:
+                score += 1
         if k >= 0 and romanNumerals[k - 1] is not None and romanNumerals[k] is not None:
             if romanNumerals[k - 1][0] == "V" and romanNumerals[k][0] == "I":
                 actuallyV = False
-                if len(romanNumerals[k - 1]) > 1:
-                    if romanNumerals[k - 1][1] != "I":
+                if len(romanNumerals[k-1]) > 1:
+                    if romanNumerals[k-1][1] != "I":
                         actuallyV = True
                 else:
                     actuallyV = True
@@ -121,8 +86,8 @@ for i in range(len(keys)):
                     score += 5
             elif romanNumerals[k - 1][0] == "V" and romanNumerals[k][0] == "i":
                 actuallyV = False
-                if len(romanNumerals[k - 1]) > 1:
-                    if romanNumerals[k - 1][1] != "I":
+                if len(romanNumerals[k-1]) > 1:
+                    if romanNumerals[k-1][1] != "I":
                         actuallyV = True
                 else:
                     actuallyV = True
@@ -134,23 +99,11 @@ for i in range(len(keys)):
                     actuallyI = True
                 if actuallyV and actuallyI:
                     score += 5
-    # print keys[i], score, romanNumerals
+    print keys[i], score, romanNumerals
     if score > highest_score:
         highest_score = score
         correct_romanNumerals = romanNumerals
         correct_key = keys[i]
-
-        # Check Transposition
-        if num_transposition_steps == 1:
-            orig_key = notes_to_chroma.ntc(correct_key)
-            orig_key = int(orig_key + 1)
-            correct_key = chroma_to_notes.ctn(orig_key)
-
-        elif num_transposition_steps == -1:
-            orig_key = notes_to_chroma.ntc(correct_key)
-            orig_key = int(orig_key - 1)
-            correct_key = chroma_to_notes.ctn(orig_key)
-
         if num_major_tonic > num_minor_tonic:
             correct_key += ' major'
         else:
