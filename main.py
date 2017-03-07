@@ -2,7 +2,7 @@ import runMelisma, sys, chordquality_identifier, convert_labels_to_roman_numeral
     notes_to_chroma, os, csv
 
 if len(sys.argv) != 2:
-    print "usage: python milestone2.py <midifile>"
+    print "usage: python main.py <midifile>"
     quit()
 
 args = sys.argv
