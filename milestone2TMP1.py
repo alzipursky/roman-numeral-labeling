@@ -11,7 +11,7 @@ keys = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 highest_score = 0
 correct_key = ""
 correct_romanNumerals = []
-chordsAndPitches, lowestNotesInChord = runMelisma.getChordsAndPitches(midifile)
+chordsAndPitches, lowestNotesInChord = runMelisma.get_chords_and_pitches(midifile)
 
 
 # for i in chordsAndPitches:
@@ -23,7 +23,7 @@ for i in range(len(keys)):
 
     for j in range(len(chordsAndPitches)):
         chordsWithQuality.append(
-            chordquality_identifier.chordquality_identifier(chordsAndPitches[j][0], chordsAndPitches[j][1]))
+            chordquality_identifier.chord_quality_identifier(chordsAndPitches[j][0], chordsAndPitches[j][1]))
 
 
 

@@ -8,7 +8,7 @@ import notes_to_chroma
 # Outputs:
 # new_chordname: str with chord name AND quality
 # notes_in_segment: list of strings remains unchanged
-def chordquality_identifier(chordname, notes_in_segment):
+def chord_quality_identifier(chordname, notes_in_segment):
     chroma_segment = []
     new_chordname = chordname
     # print new_chordname

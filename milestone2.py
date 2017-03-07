@@ -1,8 +1,8 @@
 import runMelisma, sys, chordquality_identifier, convert_labels_to_roman_numerals, transposition, chroma_to_notes, \
-    notes_to_chroma
+    notes_to_chroma, os, csv
 
 if len(sys.argv) != 2:
-    print "usage: python milestone2.py <midifile> <desired key>"
+    print "usage: python milestone2.py <midifile>"
     quit()
 
 args = sys.argv
@@ -12,7 +12,9 @@ keys = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 highest_score = 0
 correct_key = ""
 correct_romanNumerals = []
-chordsAndPitches, lowestNotesInChord = runMelisma.getChordsAndPitches(midifile)
+chordsAndPitches, lowestNotesInChord, start_times = runMelisma.get_chords_and_pitches(midifile)
+
+# print start_times
 
 # for i in chordsAndPitches:
 #     print i
@@ -61,7 +63,7 @@ for i in range(len(keys)):
 
     for j in range(len(chordsAndPitches)):
         chordsWithQuality.append(
-            chordquality_identifier.chordquality_identifier(chordsAndPitches[j][0], chordsAndPitches[j][1]))
+            chordquality_identifier.chord_quality_identifier(chordsAndPitches[j][0], chordsAndPitches[j][1]))
 
     # romanNumerals = convert_labels_to_roman_numerals.label_to_rn(chordsWithQuality, lowestNotesInChord, 'C')
     romanNumerals = convert_labels_to_roman_numerals.label_to_rn(chordsWithQuality, lowestNotesInChord, keys[i])
@@ -155,6 +157,57 @@ for i in range(len(keys)):
             correct_key += ' major'
         else:
             correct_key += ' minor'
+
+os.system('midicsv-1.1/midicsv ' + midifile + ' > output.csv')
+
+with open('output.csv') as midiCsv:
+    csvReader = csv.reader(midiCsv, delimiter=',')
+    outputFile = open('labeled_output.csv', 'wb')
+    trackNumber = 0
+    tempo = 0
+    ppqn = 24
+    endTime = 0
+    for row in csvReader:
+        row = [x.strip(' ') for x in row]
+        if row[0] == '0' and row[1] == '0' and row[2] == 'Header':
+            trackNumber = int(row[4])
+            ppqn = int(row[5])
+            string_to_write = str(row[0]) + ', ' + str(row[1]) + ', ' + str(row[2]) + ', ' + str(row[3]) + ', ' + \
+                              str(trackNumber+1) + ', ' + str(row[5])
+            outputFile.write(string_to_write + '\n')
+        elif row[0] == '1' and row[1] == '0' and row[2] == 'Tempo':
+            tempo = int(row[3])
+            string_to_write = str(row[0]) + ', ' + str(row[1]) + ', ' + str(row[2]) + ', ' + str(row[3])
+            outputFile.write(string_to_write + '\n')
+        elif row[0] == '0' and row[1] == '0' and row[2] == 'End_of_file':
+            new_track_number = trackNumber + 1
+            string_to_write = str(new_track_number) + ', 0, Start_track'
+            outputFile.write(string_to_write + '\n')
+
+            for i in range(len(correct_romanNumerals)):
+                roman_numeral = correct_romanNumerals[i]
+                bpm = int(60000000. / tempo)
+                start_time_in_ticks = int(start_times[i] / ((1./float(ppqn)) * (1./bpm) * (1000*60)))
+                string_to_write = str(new_track_number) + ', ' + str(start_time_in_ticks) + ', Text_t, \"' + \
+                                  str(roman_numeral) + '\"'
+                outputFile.write(string_to_write + '\n')
+
+            string_to_write = str(new_track_number) + ', ' + str(endTime) + ', End_track'
+            outputFile.write(string_to_write + '\n')
+
+            string_to_write = str(row[0]) + ', ' + str(row[1]) + ', ' + str(row[2])
+            outputFile.write(string_to_write + '\n')
+
+        else:
+            endTime = int(row[1])
+            string_to_write = ""
+            for i in range(len(row)-1):
+                string_to_write += row[i] + ', '
+            string_to_write += row[len(row)-1]
+            outputFile.write(string_to_write + '\n')
+    outputFile.close()
+
+os.system('midicsv-1.1/csvmidi labeled_output.csv > labeled_output.midi')
 
 print 'This excerpt is in the key of: ' + correct_key
 print correct_romanNumerals

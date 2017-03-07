@@ -1,7 +1,7 @@
 import os, time
 
 
-def getChordsAndPitches(midifile):
+def get_chords_and_pitches(midifile):
     os.system('melisma2003/mftextNEW/mftext ' + midifile + ' > new.notes')
     time.sleep(1)
     os.system('melisma2003/meter/meter new.notes | melisma2003/harmony/harmony > output.txt')
@@ -75,7 +75,9 @@ def getChordsAndPitches(midifile):
                         newTup = (tup[0],tup[1] + chunks[1:])
                         chordsAndPitches.append(newTup)
 
+    start_times = []
     for t in chordsStartAndEnd:
         lowestNoteInChord.append(chordsStartAndEndDict[t])
+        start_times.append(t[0])
 
-    return chordsAndPitches, lowestNoteInChord
+    return chordsAndPitches, lowestNoteInChord, start_times

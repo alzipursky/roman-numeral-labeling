@@ -1,6 +1,7 @@
 # Inputs:
 # chords: will be chords from main.py
-# num_transposition_steps: <int> that will ONLY be 1, or -1 where 1 is transposition up a half step, and 0 is transposition down a half step
+# num_transposition_steps: <int> that will ONLY be 1, or -1
+# where 1 is transposition up a half step, and -1 is transposition down a half step
 # Outputs:
 # Transposed chords <list>
 # transposition chroma
@@ -57,7 +58,7 @@ def transpose(pitch, num_transposition_steps):
         elif note == "Bb":
             note = "B"
 
-        # double sharps
+        # double flats
         elif note == "Cbb":
             note = "Cb"
         elif note == "Dbb":
@@ -140,7 +141,7 @@ def transpose(pitch, num_transposition_steps):
         elif note == "Bb":
             note = "B"
 
-        # double sharps
+        # double flats
         elif note == "Cbb":
             note = "Cb"
         elif note == "Dbb":
