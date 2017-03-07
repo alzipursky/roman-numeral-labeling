@@ -1,4 +1,4 @@
-import chordquality_identifier
+import chord_quality_identifier
 import convert_labels_to_roman_numerals
 import runMelisma
 import sys
@@ -18,7 +18,7 @@ chordsWithQuality = []
 
 for i in range(len(chordsAndPitches)):
     chordsWithQuality.append(
-        chordquality_identifier.chord_quality_identifier(chordsAndPitches[i][0], chordsAndPitches[i][1]))
+        chord_quality_identifier.chord_quality_identifier(chordsAndPitches[i][0], chordsAndPitches[i][1]))
 
 # romanNumerals = convert_labels_to_roman_numerals.label_to_rn(chordsWithQuality, lowestNotesInChord, 'C')
 romanNumerals = convert_labels_to_roman_numerals.label_to_rn(chordsWithQuality, lowestNotesInChord, desiredKey)

@@ -1,4 +1,4 @@
-import chordquality_identifier
+import chord_quality_identifier
 import chroma_to_notes
 import convert_labels_to_roman_numerals
 import csv
@@ -70,7 +70,7 @@ for i in range(len(keys)):
 
     for j in range(len(chordsAndPitches)):
         chordsWithQuality.append(
-            chordquality_identifier.chord_quality_identifier(chordsAndPitches[j][0], chordsAndPitches[j][1]))
+            chord_quality_identifier.chord_quality_identifier(chordsAndPitches[j][0], chordsAndPitches[j][1]))
 
     # romanNumerals = convert_labels_to_roman_numerals.label_to_rn(chordsWithQuality, lowestNotesInChord, 'C')
     romanNumerals = convert_labels_to_roman_numerals.label_to_rn(chordsWithQuality, lowestNotesInChord, keys[i])
