@@ -1,5 +1,12 @@
-import runMelisma, sys, chordquality_identifier, convert_labels_to_roman_numerals, transposition, chroma_to_notes, \
-    notes_to_chroma, os, csv
+import chordquality_identifier
+import chroma_to_notes
+import convert_labels_to_roman_numerals
+import csv
+import notes_to_chroma
+import os
+import runMelisma
+import sys
+import transposition
 
 if len(sys.argv) != 2:
     print "usage: python main.py <midifile>"
@@ -172,8 +179,8 @@ with open('output.csv') as midiCsv:
         if row[0] == '0' and row[1] == '0' and row[2] == 'Header':
             trackNumber = int(row[4])
             ppqn = int(row[5])
-            string_to_write = str(row[0]) + ', ' + str(row[1]) + ', ' + str(row[2]) + ', ' + str(row[3]) + ', ' + \
-                              str(trackNumber+1) + ', ' + str(row[5])
+            string_to_write = str(row[0]) + ', ' + str(row[1]) + ', ' + str(row[2]) + ', ' + str(row[3]) + ', ' + str(
+                trackNumber + 1) + ', ' + str(row[5])
             outputFile.write(string_to_write + '\n')
         elif row[0] == '1' and row[1] == '0' and row[2] == 'Tempo':
             tempo = int(row[3])
@@ -188,8 +195,8 @@ with open('output.csv') as midiCsv:
                 roman_numeral = correct_romanNumerals[i]
                 bpm = int(60000000. / tempo)
                 start_time_in_ticks = int(start_times[i] / ((1./float(ppqn)) * (1./bpm) * (1000*60)))
-                string_to_write = str(new_track_number) + ', ' + str(start_time_in_ticks) + ', Text_t, \"' + \
-                                  str(roman_numeral) + '\"'
+                string_to_write = str(new_track_number) + ', ' + str(start_time_in_ticks) + ', Text_t, \"' + str(
+                    roman_numeral) + '\"'
                 outputFile.write(string_to_write + '\n')
 
             string_to_write = str(new_track_number) + ', ' + str(endTime) + ', End_track'

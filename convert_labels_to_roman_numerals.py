@@ -1,4 +1,8 @@
-import chordquality_identifier, os, pickle, csv, inversion_calculator, notes_to_chroma
+import csv
+import inversion_calculator
+import notes_to_chroma
+import os
+import pickle
 
 
 # Inputs
@@ -16,17 +20,17 @@ def label_to_rn(chords_in_segment, lowest_notes_in_chord, desired_key):
         f.close()
     else:
         with open("labels_to_solfege.csv", 'rb') as labelsToSolfegeCsv:
-            csvReader = csv.reader(labelsToSolfegeCsv, delimiter=',')
-            outputFile = open('labels_to_solfege.dat', 'wb')
-            for row in csvReader:
+            csv_reader = csv.reader(labelsToSolfegeCsv, delimiter=',')
+            output_file = open('labels_to_solfege.dat', 'wb')
+            for row in csv_reader:
                 k = str(row[0])
                 v = []
                 for chroma in row[1:]:
                     v.append(int(chroma))
                 labels_to_solfege[k] = v
-            p = pickle.Pickler(outputFile)
+            p = pickle.Pickler(output_file)
             p.dump(labels_to_solfege)
-            outputFile.close()
+            output_file.close()
 
     solfege_to_roman_numerals = {}
     if os.path.isfile("solfege_to_roman_numerals.dat"):
@@ -36,18 +40,18 @@ def label_to_rn(chords_in_segment, lowest_notes_in_chord, desired_key):
         f.close()
     else:
         with open("solfege_to_roman_numerals.csv", 'rU') as solfege_to_roman_numeralsCsv:
-            csvReader = csv.reader(solfege_to_roman_numeralsCsv, delimiter=',')
-            outputFile = open('solfege_to_roman_numerals.dat', 'wb')
-            for row in csvReader:
+            csv_reader = csv.reader(solfege_to_roman_numeralsCsv, delimiter=',')
+            output_file = open('solfege_to_roman_numerals.dat', 'wb')
+            for row in csv_reader:
                 v = row[0]
                 k = []
                 for chroma in row[1:]:
                     k.append(int(chroma))
                 k_tup = tuple(k)
                 solfege_to_roman_numerals[k_tup] = v
-            p = pickle.Pickler(outputFile)
+            p = pickle.Pickler(output_file)
             p.dump(solfege_to_roman_numerals)
-            outputFile.close()
+            output_file.close()
 
     chord_inversions = []
 
@@ -64,13 +68,13 @@ def label_to_rn(chords_in_segment, lowest_notes_in_chord, desired_key):
     new_chords = []
     new_solfege = []
 
-    new_key = notes_to_chroma.ntc(desired_key);
+    new_key = notes_to_chroma.ntc(desired_key)
     for chord in range(len(chord_solfege)):
         # print chord_solfege[chord]
         for solfege in range(len(chord_solfege[chord])):
             x = chord_solfege[chord][solfege] - new_key
             if x < 0:
-                x = x + 12
+                x += 12
             # print x
             new_solfege.append(x)
         new_chords.append(new_solfege)

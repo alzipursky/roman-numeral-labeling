@@ -1,5 +1,7 @@
-import runMelisma, sys, chordquality_identifier, convert_labels_to_roman_numerals
-
+import chordquality_identifier
+import convert_labels_to_roman_numerals
+import runMelisma
+import sys
 
 if len(sys.argv) != 3:
     print "usage: python milestone1.py <midifile> <desired key>"
@@ -15,7 +17,8 @@ chordsAndPitches, lowestNotesInChord = runMelisma.get_chords_and_pitches(midifil
 chordsWithQuality = []
 
 for i in range(len(chordsAndPitches)):
-    chordsWithQuality.append(chordquality_identifier.chord_quality_identifier(chordsAndPitches[i][0], chordsAndPitches[i][1]))
+    chordsWithQuality.append(
+        chordquality_identifier.chord_quality_identifier(chordsAndPitches[i][0], chordsAndPitches[i][1]))
 
 # romanNumerals = convert_labels_to_roman_numerals.label_to_rn(chordsWithQuality, lowestNotesInChord, 'C')
 romanNumerals = convert_labels_to_roman_numerals.label_to_rn(chordsWithQuality, lowestNotesInChord, desiredKey)

@@ -2,7 +2,7 @@ import notes_to_chroma
 
 
 # Inputs
-# chordname: string of chord name output by melisma (e.g., C)
+# chord_name: string of chord name output by melisma (e.g., C)
 # notes_in_segment: list of strings of notes in segment(e.g., C D E F G E C B D C)
 # lowest midi_note: int
 # Outputs:

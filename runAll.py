@@ -1,4 +1,4 @@
-import os, time
+import os
 
 
 for filename in os.listdir('melisma2003/midifiles/kp'):
