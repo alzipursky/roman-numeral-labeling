@@ -9,7 +9,7 @@ import sys
 import transposition
 
 if len(sys.argv) != 2:
-    print "usage: python main.py <midifile>"
+    print "usage: python main.py [midifile]"
     quit()
 
 args = sys.argv
@@ -174,6 +174,8 @@ with open('output.csv') as midiCsv:
     tempo = 0
     ppqn = 24
     endTime = 0
+    start_times_in_ticks = []
+    current_start_time = 0
     for row in csvReader:
         row = [x.strip(' ') for x in row]
         if row[0] == '0' and row[1] == '0' and row[2] == 'Header':
@@ -186,25 +188,31 @@ with open('output.csv') as midiCsv:
             tempo = int(row[3])
             string_to_write = str(row[0]) + ', ' + str(row[1]) + ', ' + str(row[2]) + ', ' + str(row[3])
             outputFile.write(string_to_write + '\n')
-        elif row[0] == '0' and row[1] == '0' and row[2] == 'End_of_file':
-            new_track_number = trackNumber + 1
-            string_to_write = str(new_track_number) + ', 0, Start_track'
-            outputFile.write(string_to_write + '\n')
-
             for i in range(len(correct_romanNumerals)):
-                roman_numeral = correct_romanNumerals[i]
                 bpm = int(60000000. / tempo)
                 start_time_in_ticks = int(start_times[i] / ((1./float(ppqn)) * (1./bpm) * (1000*60)))
-                string_to_write = str(new_track_number) + ', ' + str(start_time_in_ticks) + ', Text_t, \"' + str(
-                    roman_numeral) + '\"'
+                start_times_in_ticks.append(start_time_in_ticks)
+            # print len(start_times_in_ticks)
+            # print len(correct_romanNumerals)
+        elif row[0] == '2':
+            while current_start_time < len(start_times_in_ticks) and \
+                            start_times_in_ticks[current_start_time] < int(row[1]):
+                string_to_write = ""
+                if current_start_time == 0:
+                    string_to_write = str(row[0]) + ', ' + str(
+                        start_times_in_ticks[current_start_time]) + ', Text_t, \"' + correct_key + ': ' + str(
+                        correct_romanNumerals[current_start_time]) + '\"'
+                else:
+                    string_to_write = str(row[0]) + ', ' + str(
+                        start_times_in_ticks[current_start_time]) + ', Text_t, \"' + str(
+                        correct_romanNumerals[current_start_time]) + '\"'
                 outputFile.write(string_to_write + '\n')
-
-            string_to_write = str(new_track_number) + ', ' + str(endTime) + ', End_track'
+                current_start_time += 1
+            string_to_write = ""
+            for i in range(len(row)-1):
+                string_to_write += row[i] + ', '
+            string_to_write += row[len(row)-1]
             outputFile.write(string_to_write + '\n')
-
-            string_to_write = str(row[0]) + ', ' + str(row[1]) + ', ' + str(row[2])
-            outputFile.write(string_to_write + '\n')
-
         else:
             endTime = int(row[1])
             string_to_write = ""
@@ -214,7 +222,10 @@ with open('output.csv') as midiCsv:
             outputFile.write(string_to_write + '\n')
     outputFile.close()
 
-os.system('midicsv-1.1/csvmidi labeled_output.csv > labeled_output.midi')
+# print midifile
+new_file_name = midifile.strip('melisma2003/midifiles/kp/')
+# print new_file_name
+os.system('midicsv-1.1/csvmidi labeled_output.csv > ' + str(new_file_name) + 'mid')
 
 print 'This excerpt is in the key of: ' + correct_key
 print correct_romanNumerals
