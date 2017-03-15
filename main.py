@@ -87,10 +87,16 @@ for i in range(len(keys)):
         if romanNumerals[k][0] == "I":
             if len(romanNumerals[k]) > 1:
                 if romanNumerals[k][1] != "I" and romanNumerals[k][1] != "V":
-                    score += 1
+                    if k == len(romanNumerals) - 1:
+                        score += 2
+                    else:
+                        score += 1
                     num_major_tonic += 1
             else:
-                score += 1
+                if k == len(romanNumerals) - 1:
+                    score += 2
+                else:
+                    score += 1
                 num_major_tonic += 1
 
         if romanNumerals[k][0] == "i":
@@ -104,8 +110,10 @@ for i in range(len(keys)):
 
         if romanNumerals[k][0] == "V" or romanNumerals[k][0] == "v":
             if len(romanNumerals[k]) > 1:
-                if romanNumerals[k][1] != "i" and romanNumerals[k][1] != "I":
+                if romanNumerals[k][1] != "i" and romanNumerals[k][1] != "I" and romanNumerals[k][1] != "/":
                     score += 1
+                    if len(romanNumerals[k]) > 2 and romanNumerals[k][2] == "/":
+                        score -= 1
             else:
                 score += 1
         if romanNumerals[k][0:1] == "IV" or romanNumerals[k][0:1] == "iv":
@@ -143,7 +151,7 @@ for i in range(len(keys)):
                     actuallyI = True
                 if actuallyV and actuallyI:
                     score += 5
-    # print keys[i], score, romanNumerals
+    print keys[i], score, romanNumerals
     if score > highest_score:
         highest_score = score
         correct_romanNumerals = romanNumerals
@@ -194,7 +202,7 @@ with open('output.csv') as midiCsv:
                 start_times_in_ticks.append(start_time_in_ticks)
             # print len(start_times_in_ticks)
             # print len(correct_romanNumerals)
-        elif row[0] == '2':
+        elif row[0] == str(trackNumber):
             while current_start_time < len(start_times_in_ticks) and \
                             start_times_in_ticks[current_start_time] < int(row[1]):
                 string_to_write = ""
