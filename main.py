@@ -151,7 +151,7 @@ for i in range(len(keys)):
                     actuallyI = True
                 if actuallyV and actuallyI:
                     score += 5
-    print keys[i], score, romanNumerals
+    # print keys[i], score, romanNumerals
     if score > highest_score:
         highest_score = score
         correct_romanNumerals = romanNumerals
